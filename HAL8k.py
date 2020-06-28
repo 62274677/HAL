@@ -1,19 +1,23 @@
 import discord
 import json
-import threading
-import asyncio
-import substring
-import random
-import requests 
-import os
-import subprocess
 import hal_commands
-# import logger
-from discord.ext import commands
-import aiohttp
+
 from io import BytesIO
 from requests.sessions import session
 from logging import Logger
+
+#---currently unused---
+# import threading
+# import asyncio
+# import substring
+# import random
+# import requests 
+# import os
+# import subprocess
+# from discord.ext import commands
+# import aiohttp
+
+
 
 client = discord.Client()
 token = json.load(open('token.json'))['token']
@@ -34,8 +38,12 @@ async def on_message(message):
             msg = ':no:'
         elif 'open' in content and 'bay' in content and 'doors' in content :
             message_type = 'message'
-            msg = "I can\'t do that for you, {}.".format(message.author.mention)
+            msg = "I'm sorry, {}, I'm afraid I can't do that.".format(message.author.mention)
         elif content == 'embed':
+            message_type = 'embed'
+        elif content == 'ccdc calendar':
+            msg = generate_ccdc_calendar(); #not implemented
+            await message.channel.send(msg)
             message_type = 'embed'
         else:
             message_type = 'message'
@@ -51,7 +59,7 @@ async def on_message(message):
                 exampleEmbed.add_field(name='Regular field title', value= '\n```'+hal_commands.table_test()+'```')
                 await message.channel.send(embed=exampleEmbed)
                 msg = str(hal_commands.table_test())
-                await message.channel.send('\n```'+msg+'```')
+                await message.channel.send('\n`'+msg+'`')
         except Exception as e:
             await message.channel.send(e)
             Logger.error(e,e)
