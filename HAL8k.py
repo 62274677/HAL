@@ -48,10 +48,10 @@ async def on_message(message):
             elif message_type == 'embed':
                 exampleEmbed =  discord.Embed(colour = 0x0099ff, title = 'Some title', url = 'https://discord.js.org/')
                 exampleEmbed.set_footer(text='Some footer text here', icon_url='https://i.imgur.com/wSTFkRM.png')
-                exampleEmbed.add_field(name='Regular field title', value= '```'+hal_commands.table_test()+'```')
+                exampleEmbed.add_field(name='Regular field title', value= '\n```'+hal_commands.table_test()+'```')
                 await message.channel.send(embed=exampleEmbed)
                 msg = str(hal_commands.table_test())
-                await message.channel.send('```'+msg+'```')
+                await message.channel.send('\n```'+msg+'```')
         except Exception as e:
             await message.channel.send(e)
             Logger.error(e,e)
