@@ -7,14 +7,18 @@ import random
 import requests 
 import os
 import subprocess
-import commands
+import hal_commands
+# import logger
 from discord.ext import commands
 import aiohttp
 from io import BytesIO
 from requests.sessions import session
+from logging import Logger
 
 client = discord.Client()
 token = json.load(open('token.json'))['token']
+message_type = "" #message, embed, both, undefined
+msg = ""
 # print(token)
 
 @client.event
@@ -25,11 +29,32 @@ async def on_ready():
 async def on_message(message):
     if message.content.startswith('$'):
         content = message.content.split('$')[1]
-        if 'open' in content and 'bay' in content and 'doors' in content :
-            await message.channel.send("I can\'t do that for you, {}.".format(message.author.mention))
+        if content.upper() == 'HELP' or ('man' in content and 'HAL' in content):
+            message_type = 'message'
+            msg = ':no:'
+        elif 'open' in content and 'bay' in content and 'doors' in content :
+            message_type = 'message'
+            msg = "I can\'t do that for you, {}.".format(message.author.mention)
+        elif content == 'embed':
+            message_type = 'embed'
         else:
-            await message.channel.send('That is not a recognized command. \nPlease type `$HELP` or `$man HAL` for further information.')
+            message_type = 'message'
+            msg = 'That is not a recognized command. \nPlease type `$HELP` or `$man HAL` for further information.'
         
-        
+        #Send message or embed
+        try:
+            if message_type == 'message':
+                await message.channel.send(msg)
+            elif message_type == 'embed':
+                exampleEmbed =  discord.Embed(colour = 0x0099ff, title = 'Some title', url = 'https://discord.js.org/')
+                exampleEmbed.set_footer(text='Some footer text here', icon_url='https://i.imgur.com/wSTFkRM.png')
+                exampleEmbed.add_field(name='Regular field title', value= '```'+hal_commands.table_test()+'```')
+                await message.channel.send(embed=exampleEmbed)
+                msg = str(hal_commands.table_test())
+                await message.channel.send('```'+msg+'```')
+        except Exception as e:
+            await message.channel.send(e)
+            Logger.error(e,e)
+            
         
 client.run(token);
