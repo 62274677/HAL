@@ -11,7 +11,7 @@ with open('storage.json') as storage_file:
     storage = json.load(storage_file)
 
     def table_test():
-        writer = ptw.UnicodeTableWriter() #LatexTableWriter
+        writer = ptw.UnicodeTableWriter() 
         writer.max_workers = cpu_count()
         writer.table_name = "example_table"
         writer.headers = ["int", "float", "str", "bool", "mix", "time"]
@@ -52,7 +52,7 @@ with open('storage.json') as storage_file:
         sheet_content = readSheet(url,'list',0)
         
         #make this modular!
-        writer = ptw.LatexTableWriter()
+        writer = ptw.UnicodeTableWriter() #LatexTableWriter
         writer.table_name = "CCDC Calendar"
         writer.headers = sheet_content[1]
         
