@@ -11,7 +11,7 @@ with open('storage.json') as storage_file:
     storage = json.load(storage_file)
 
     def table_test():
-        writer = ptw.UnicodeTableWriter()
+        writer = ptw.UnicodeTableWriter() #LatexTableWriter
         writer.max_workers = cpu_count()
         writer.table_name = "example_table"
         writer.headers = ["int", "float", "str", "bool", "mix", "time"]
