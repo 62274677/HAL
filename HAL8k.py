@@ -5,6 +5,9 @@ import hal_commands
 from io import BytesIO
 from requests.sessions import session
 from logging import Logger
+# import required classes
+
+from PIL import Image, ImageDraw, ImageFont
 
 #---currently unused---
 # import threading
@@ -16,7 +19,6 @@ from logging import Logger
 # import subprocess
 # from discord.ext import commands
 # import aiohttp
-
 
 
 client = discord.Client()
@@ -43,13 +45,22 @@ async def on_message(message):
             message_type = 'embed'
         elif content == 'ccdc calendar':
             
-            msg = hal_commands.generate_ccdc_calendar()[1];
-            try:
-                await message.channel.send(msg)
-            except Exception as e:
-                await message.channel.send(e)
-                Logger.error(e,e)
-            message_type = 'embed'
+            msg = hal_commands.generate_ccdc_calendar()[1]
+            img = Image.new('RGB', (0,0),color =  (54, 57, 61))
+ 
+           
+            fnt = ImageFont.truetype(font='Hack-Regular.ttf', size=100,encoding="unic")
+            draw = ImageDraw.Draw(img)
+            textsize = draw.textsize(msg, fnt)
+            background = (54, 57, 61)
+            img = Image.new("RGB", textsize, background)
+            draw = ImageDraw.Draw(img)
+            draw.text((10,10), msg, font=fnt, spacing=0, fill=(220,221,222))
+            img.save("table.png")
+            await message.channel.send(file=discord.File("table.png"))
+            message_type = 'table'
+            
+
         else:
             message_type = 'message'
             msg = 'That is not a recognized command. \nPlease type `$HELP` or `$man HAL` for further information.'
@@ -58,16 +69,18 @@ async def on_message(message):
         try:
             if message_type == 'message':
                 await message.channel.send(msg)
-            elif message_type == 'embed':
-                exampleEmbed =  discord.Embed(colour = 0x0099ff, title = 'Some title', url = 'https://discord.js.org/')
-                exampleEmbed.set_footer(text='Some footer text here', icon_url='https://i.imgur.com/wSTFkRM.png')
-                exampleEmbed.add_field(name='Regular field title', value= '\n```'+hal_commands.table_test()+'```')
-                await message.channel.send(embed=exampleEmbed)
-                msg = str(hal_commands.table_test())
-                await message.channel.send('\n`'+msg+'`')
+            else:
+                print("silence is golden")
+            # elif message_type == 'embed':
+            #     exampleEmbed =  discord.Embed(colour = 0x0099ff, title = 'Some title', url = 'https://discord.js.org/')
+            #     exampleEmbed.set_footer(text='Some footer text here', icon_url='https://i.imgur.com/wSTFkRM.png')
+            #     exampleEmbed.add_field(name='Regular field title', value= '\n```'+hal_commands.table_test()+'```')
+            #     await message.channel.send(embed=exampleEmbed)
+            #     msg = str(hal_commands.table_test())
+            #     await message.channel.send('\n`'+msg+'`')
         except Exception as e:
             await message.channel.send(e)
             Logger.error(e,e)
             
         
-client.run(token);
+client.run(token)
