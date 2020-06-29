@@ -52,7 +52,8 @@ with open('storage.json') as storage_file:
         sheet_content = readSheet(url,'list',0)
         
         #make this modular!
-        writer = ptw.UnicodeTableWriter() #LatexTableWriter
+        # writer = ptw.LatexTableWriter()
+        writer = ptw.UnicodeTableWriter()
         writer.table_name = "CCDC Calendar"
         writer.headers = sheet_content[1]
         
