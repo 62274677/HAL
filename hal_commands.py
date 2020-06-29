@@ -5,7 +5,7 @@ import io
 import json
 from multiprocessing import cpu_count
 import gspread
-import sympy
+# import sympy
 
 with open('storage.json') as storage_file:
     storage = json.load(storage_file)
@@ -65,7 +65,7 @@ with open('storage.json') as storage_file:
         writer.write_table()
         writer.stream = io.StringIO() #change output to string
         writer.write_table() #output to stream
-        sympy.preview(writer.stream.getvalue(),output='png')
+        # sympy.preview(writer.stream.getvalue(),output='png')
         return sheet_content[0], writer.stream.getvalue(), sheet_content
     
-    generate_ccdc_calendar()
+    # generate_ccdc_calendar()

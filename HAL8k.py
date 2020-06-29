@@ -42,8 +42,13 @@ async def on_message(message):
         elif content == 'embed':
             message_type = 'embed'
         elif content == 'ccdc calendar':
+            
             msg = hal_commands.generate_ccdc_calendar()[1];
-            await message.channel.send(msg)
+            try:
+                await message.channel.send(msg)
+            except Exception as e:
+                await message.channel.send(e)
+                Logger.error(e,e)
             message_type = 'embed'
         else:
             message_type = 'message'
