@@ -5,7 +5,7 @@ import io
 import json
 from multiprocessing import cpu_count
 import gspread
-# import sympy
+import sympy
 
 with open('storage.json') as storage_file:
     storage = json.load(storage_file)
@@ -50,6 +50,12 @@ with open('storage.json') as storage_file:
     def generate_ccdc_calendar():
         url = findSheet("calendars","ccdc")
         sheet_content = readSheet(url,'list',0)
+        calendar_link = sheet_content[0][0]
+        
+        for i in sheet_content:
+            del i[-1]
+            del i[4]
+            del i[0]
         
         #make this modular!
         # writer = ptw.LatexTableWriter()
@@ -58,7 +64,7 @@ with open('storage.json') as storage_file:
         writer.headers = sheet_content[1]
         
         matrix = []
-        for i in range(2,len(sheet_content)-1):
+        for i in range(2,len(sheet_content)-1): #append all remaining rows to be output (not including clendar link and header)
             matrix.append(sheet_content[i])
         
         writer.value_matrix = matrix
