@@ -5,8 +5,9 @@ import io
 import json
 from multiprocessing import cpu_count
 import gspread
+from PIL import Image, ImageDraw, ImageFont
 # import sympy
-storage
+storage = ''
 
 with open('storage.json') as storage_file:
     storage = json.load(storage_file)
@@ -30,6 +31,19 @@ def table_test():
     return writer.stream.getvalue()#return string
 #end table test
         
+def image_writer(text):
+    img = Image.new('RGB', (0,0),color =  (54, 57, 61))           
+    fnt = ImageFont.truetype(font='Hack-Regular.ttf', size=100,encoding="unic")
+    draw = ImageDraw.Draw(img)
+    textsize = draw.textsize(text, fnt)
+    background = (54, 57, 61)
+    img = Image.new("RGB", textsize, background)
+    draw = ImageDraw.Draw(img)
+    draw.text((10,10), text, font=fnt, spacing=0, fill=(220,221,222))
+    img.save("image.png")
+    return img
+#end image writer
+        
 def find_sheet(key_category, key_name):
     value = storage[key_category][key_name]
     return value    
@@ -52,11 +66,18 @@ def generate_ccdc_calendar():
     url = find_sheet("calendars","ccdc")
     sheet_content = read_sheet(url,'list',0)
     
+    for i in range(1,len(sheet_content)-1):
+        del sheet_content[i][0]
+        del sheet_content[i][-1]
+        del sheet_content[i][-1]
     #make this modular!
     # writer = ptw.LatexTableWriter()
     writer = ptw.UnicodeTableWriter()
     writer.table_name = "CCDC Calendar"
+    
     writer.headers = sheet_content[1]
+    
+    
     
     matrix = []
     for i in range(2,len(sheet_content)-1):
@@ -70,4 +91,4 @@ def generate_ccdc_calendar():
     # sympy.preview(writer.stream.getvalue(),output='png')
     return sheet_content[0], writer.stream.getvalue(), sheet_content
     
-    # generate_ccdc_calendar()
+    generate_ccdc_calendar()
