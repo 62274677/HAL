@@ -1,6 +1,7 @@
 import pytablewriter as ptw
 from textwrap import dedent
 import pandas as pd
+import re
 import io
 import json
 from multiprocessing import cpu_count
@@ -49,7 +50,7 @@ def find_sheet(key_category, key_name):
     return value    
         
 def read_sheet(sheet_url,type,worksheet_index):
-    gc = gc = gspread.service_account()
+    gc = gspread.service_account()
     sheet = gc.open_by_url(sheet_url)
     sheet_content=''
     
@@ -60,35 +61,46 @@ def read_sheet(sheet_url,type,worksheet_index):
     else:
         sheet_content = "Error: arguments likely invalid."
     
-    return sheet_content
+    meetingURL_cell = sheet.get_worksheet(worksheet_index).find(sheet_content[0][0])
+    #return all cells and the calendar url
+    return sheet_content, sheet.get_worksheet(worksheet_index).cell(meetingURL_cell.row,meetingURL_cell.col, value_render_option='FORMULA').value
     
 def generate_ccdc_calendar():
     url = find_sheet("calendars","ccdc")
-    sheet_content = read_sheet(url,'list',0)
+    sheet_tuple = read_sheet(url,'list',0)
+    sheet_content = sheet_tuple[0]
+    calendar_link = re.match('=hyperlink\("(.+)",".+"\)',sheet_tuple[1])[1]
+    zoom_links =  [re.match('=hyperlink\("(.+)",".+"\)',link[4]) for link in sheet_content[1:] ]
+    full_topics = [topic[1] for topic in sheet_content[1:]]
     
-    for i in range(1,len(sheet_content)-1):
-        del sheet_content[i][0]
-        del sheet_content[i][-1]
-        del sheet_content[i][-1]
+    for row in range(1,len(sheet_content)):
+        del sheet_content[row][0]
+        del sheet_content[row][-1]
+        del sheet_content[row][-1]
+    
+    sheet_content = [i for i in sheet_content if any(j != '' for j in i)]
+    max_length = 60
+    # sheet_content[row] = list(filter(lambda x: x != "", sheet_content[row]))
+    for row in range(1,len(sheet_content)-1):
+        #shorten lines
+        for column in range(0,len(sheet_content[row])-1):
+          if len(sheet_content[row][column]) > max_length:
+              sheet_content[row][column] = sheet_content[row][column][0:max_length-3] + '...'
+    
     #make this modular!
     # writer = ptw.LatexTableWriter()
     writer = ptw.UnicodeTableWriter()
     writer.table_name = "CCDC Calendar"
     
     writer.headers = sheet_content[1]
-    
-    
-    
-    matrix = []
-    for i in range(2,len(sheet_content)-1):
-        matrix.append(sheet_content[i])
-    
-    writer.value_matrix = matrix
+    writer.value_matrix = sheet_content[2:]
     
     writer.write_table()
     writer.stream = io.StringIO() #change output to string
     writer.write_table() #output to stream
+    #DEGUG PRINT
+    print(calendar_link)
     # sympy.preview(writer.stream.getvalue(),output='png')
-    return sheet_content[0], writer.stream.getvalue(), sheet_content
+    return writer.stream.getvalue(), full_topics, calendar_link, zoom_links
     
-    generate_ccdc_calendar()
+generate_ccdc_calendar()
