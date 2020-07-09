@@ -71,6 +71,11 @@ async def on_message(message):
                 ccdc_calendar = hal_commands.generate_ccdc_calendar()
                 msg = ccdc_calendar[0]
                 hal_commands.image_writer(msg)
+                
+                meeting = hal_commands.find_next_meeting(ccdc_calendar[4])
+                ccdcEmbed = discord.Embed(color = 0x0099ff, title = 'Upcoming CCDC Meeting (CLICK HERE FOR REMINDERS)',url = ccdc_calendar[1])
+                ccdcEmbed.add_field('Next meeting: ' + meeting[0][1])
+                
                 message_type = 'embed'
             elif content == 'ccdc calendar msg':
                 msg = hal_commands.generate_ccdc_calendar()[0]
@@ -117,8 +122,7 @@ async def on_message(message):
                 await message.channel.send('\n`'+msg+'`')
             
             elif message_type == 'embed':
-                ccdcEmbed = discord.Embed(color = 0x0099ff, title = 'Upcoming CCDC Meeting (CLICK HERE FOR REMINDERS)',url = ccdc_calendar[1])
-                ccdcEmbed.add_field('Next meeting: ')
+                
                 # exampleEmbed =  discord.Embed(colour = 0x0099ff, title = 'Some title', url = 'https://discord.js.org/')
                 # exampleEmbed.set_footer(text='Some footer text here', icon_url='https://i.imgur.com/wSTFkRM.png')
                 # exampleEmbed.add_field(name='Regular field title', value= '\n```'+msg+'```')

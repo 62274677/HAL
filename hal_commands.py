@@ -7,6 +7,7 @@ import json
 from multiprocessing import cpu_count
 import gspread
 from PIL import Image, ImageDraw, ImageFont
+import datetime
 # import sympy
 storage = ''
 
@@ -69,6 +70,7 @@ def generate_ccdc_calendar():
     url = find_sheet("calendars","ccdc")
     sheet_tuple = read_sheet(url,'list',0)
     sheet_content = sheet_tuple[0]
+    sheet_content_original = []
     calendar_link = re.match('=hyperlink\("(.+)",".+"\)',sheet_tuple[1])[1]
     zoom_links =  [re.match('=hyperlink\("(.+)",".+"\)',link[4]) for link in sheet_content[1:] ]
     full_topics = [topic[1] for topic in sheet_content[1:]]
@@ -79,6 +81,7 @@ def generate_ccdc_calendar():
         del sheet_content[row][-1]
     
     sheet_content = [i for i in sheet_content if any(j != '' for j in i)]
+    sheet_content_original = sheet_content
     max_length = 60
     # sheet_content[row] = list(filter(lambda x: x != "", sheet_content[row]))
     for row in range(1,len(sheet_content)-1):
@@ -99,8 +102,26 @@ def generate_ccdc_calendar():
     writer.stream = io.StringIO() #change output to string
     writer.write_table() #output to stream
     #DEGUG PRINT
-    print(calendar_link)
+    # print(calendar_link)
     # sympy.preview(writer.stream.getvalue(),output='png')
-    return writer.stream.getvalue(), full_topics, calendar_link, zoom_links
+    return writer.stream.getvalue(), full_topics, calendar_link, zoom_links, sheet_content_original
     
-generate_ccdc_calendar()
+def find_next_meeting(sheet):
+    column = -1
+    try:
+        column = list(map(str.lower,sheet[1])).index("date")
+    except:
+        return ["Invalid sheet contents."]
+    for i in range(2,len(sheet)-1):
+        date = sheet[i][column]
+        today = datetime.datetime.today()
+        
+        if today.date() <= datetime.datetime.strptime(re.sub('(\d+)(st|nd|rd|th)', '\g<1>', date), '%A, %B %d, %Y').date():
+            return sheet[i],i
+        elif date.lower() == 'tba':
+            return sheet[i],i
+        
+    return ["There is no new meetings scheduled."]
+        
+    
+print(find_next_meeting(generate_ccdc_calendar()[4]))
