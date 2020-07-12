@@ -51,7 +51,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.startswith('$'):
-        if (message.channel.id == 413115363966976000 or message.channel.id == 706339236273455135 or message.channel.id == 700108674550726718 or message.guild.name == 'Maximum Development'): 
+        if (message.channel.id == 413115363966976000 or message.channel.id == 717878096438755428 or message.channel.id == 706339236273455135 or message.channel.id == 700108674550726718 or message.channel.id == 717878150398214234 or message.guild.name == 'Maximum Development'): 
             msg = ' '
             message_type = "" #message, embed, both, undefined
             max_characters = 2000
@@ -68,14 +68,18 @@ async def on_message(message):
 
             elif content.startswith('ccdc calendar'):
                 if content == 'ccdc calendar embed':
-                    ccdc_calendar = hal_commands.generate_ccdc_calendar() #message, topics, link, sheet_content_original
+                    ccdc_calendar = hal_commands.generate_ccdc_calendar() #message, topics, c,zlink, sheet_content_original
                     msg = ccdc_calendar[0]
                     hal_commands.image_writer(msg)
                     
                     meeting = hal_commands.find_next_meeting(ccdc_calendar[4])
                     
                     ccdcEmbed = discord.Embed(color = 0xbf2c34, title = 'Upcoming CCDC Meeting (CLICK HERE FOR REMINDERS)',url = ccdc_calendar[2])
-                    ccdcEmbed.set_author(name="Click here for zoom link!", url="https://google.com", icon_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg")
+                    if(ccdc_calendar[3][meeting[1]]): 
+                        ccdcEmbed.set_author(name="This meeting will be on discord or zoom (no link yet).", url="https://google.com", icon_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg")
+                    else:
+                        ccdcEmbed.set_author(name="Click here for zoom link!", url="", icon_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg")
+
                     # ccdcEmbed.add_field(name=".", value=".", inline=False)
                     ccdcEmbed.add_field(name=ccdc_calendar[1][meeting[1]], value=str("\a"), inline=False)
                     ccdcEmbed.add_field(name="Next Meeting:", value=meeting[0][1], inline=False)
