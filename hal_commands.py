@@ -62,12 +62,17 @@ def read_sheet(sheet_url,type,worksheet_index):
     else:
         sheet_content = "Error: arguments likely invalid."
     
+    # for c,v in enumerate(sheet_content[2:],2):
+        
+    
+    
     meetingURL_cell = sheet.get_worksheet(worksheet_index).find(sheet_content[0][0])
+    
     #return all cells and the calendar url
     return sheet_content, sheet.get_worksheet(worksheet_index).cell(meetingURL_cell.row,meetingURL_cell.col, value_render_option='FORMULA').value
     
 def generate_ccdc_calendar():
-    url = find_sheet("calendars","ccdc")
+    url = find_sheet("calendar","ccdc")
     sheet_tuple = read_sheet(url,'list',0)
     sheet_content = sheet_tuple[0]
     sheet_content_original = []
@@ -123,6 +128,16 @@ def find_next_meeting(sheet):
             return sheet[i],i-1
         
     return ["There is no new meetings scheduled."]
+    
+    # for i, event_row in enumerate(sheet[2:],2):
+    #     event_date = event_row[column]
+    #     today = today()
+
+    #     if event_date.lower() == 'tba' or today <= event_date::
+    #         return event_row, i
+       
+            
+    
         
     
 print(find_next_meeting(generate_ccdc_calendar()[4]))
