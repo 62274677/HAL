@@ -57,6 +57,9 @@ def read_sheet(sheet_url,type,worksheet_index):
     
     if type == 'list':
         sheet_content = sheet.get_worksheet(worksheet_index).get_all_values()
+        # print("\n")
+        # print("sheet_content\n")
+        # print(sheet_content)
     elif type == 'dict':
         sheet_content = sheet.get_worksheet(worksheet_index).get_all_records()
     else:
@@ -67,17 +70,28 @@ def read_sheet(sheet_url,type,worksheet_index):
     
     
     meetingURL_cell = sheet.get_worksheet(worksheet_index).find(sheet_content[0][0])
-    
+    fullsheet = sheet.get_worksheet(worksheet_index).get_all_values( value_render_option='FORMULA')
+    # print(links)
+    links=[]
+    for link in fullsheet:
+        links.append(link[4])
     #return all cells and the calendar url
-    return sheet_content, sheet.get_worksheet(worksheet_index).cell(meetingURL_cell.row,meetingURL_cell.col, value_render_option='FORMULA').value
+    return sheet_content, sheet.get_worksheet(worksheet_index).cell(meetingURL_cell.row,meetingURL_cell.col, value_render_option='FORMULA').value,links
     
 def generate_ccdc_calendar():
     url = find_sheet("calendar","ccdc")
     sheet_tuple = read_sheet(url,'list',0)
     sheet_content = sheet_tuple[0]
     sheet_content_original = []
+    links=sheet_tuple[2]
+    # print("\n")
+    # print(sheet_content)
     calendar_link = re.match('=hyperlink\("(.+)",".+"\)',sheet_tuple[1])[1]
-    zoom_links =  [re.match('=hyperlink\("(.+)",".+"\)',link[4]) for link in sheet_content[1:] ]
+    
+    zoom_links =  [re.match('=hyperlink\("(.+)",".+"\)',link) for link in links ]
+    zoom_links.pop(0)
+    print(zoom_links)
+    
     full_topics = [topic[1] for topic in sheet_content[1:]]
     
     for row in range(1,len(sheet_content)):

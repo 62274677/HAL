@@ -73,12 +73,17 @@ async def on_message(message):
                     hal_commands.image_writer(msg)
                     
                     meeting = hal_commands.find_next_meeting(ccdc_calendar[4])
-                    
                     ccdcEmbed = discord.Embed(color = 0xbf2c34, title = 'Upcoming CCDC Meeting (CLICK HERE FOR REMINDERS)',url = ccdc_calendar[2])
-                    if(ccdc_calendar[3][meeting[1]]): 
-                        ccdcEmbed.set_author(name="This meeting will be on discord or zoom (no link yet).", url="https://google.com", icon_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg")
+                    print(meeting)
+                    print("\n")
+                    zlink=ccdc_calendar[3][meeting[1]][1]
+                    print(zlink)
+
+                    if(zlink): 
+                        ccdcEmbed.set_author(name="Click here for zoom link!", url=zlink, icon_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg")
+
                     else:
-                        ccdcEmbed.set_author(name="Click here for zoom link!", url="", icon_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg")
+                        ccdcEmbed.set_author(name="This meeting will be on discord or zoom (no link yet).", url="https://google.com", icon_url="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg")
 
                     # ccdcEmbed.add_field(name=".", value=".", inline=False)
                     ccdcEmbed.add_field(name=ccdc_calendar[1][meeting[1]], value=str("\a"), inline=False)
