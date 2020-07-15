@@ -23,7 +23,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 client = discord.Client()
-token = json.load(open('token.json'))['token']
+token = json.load(open(hal_commands.current_file_path+'token.json'))['token']
 
 
 # print(token)
@@ -148,7 +148,7 @@ async def on_message(message):
                     # await message.channel.send(embed=exampleEmbed)
                     # await message.channel.send('\n`'+msg+'`')
                 elif message_type == 'image':
-                    file = ''
+                    # file = ''
                     await message.channel.send(file=discord.File("image.png"))
                     os.remove("image.png")
                 else:

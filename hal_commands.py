@@ -1,6 +1,6 @@
 import pytablewriter as ptw
 from textwrap import dedent
-import pandas as pd
+# import pandas as pd
 import re
 import io
 import json
@@ -9,9 +9,11 @@ import gspread
 from PIL import Image, ImageDraw, ImageFont
 import datetime
 # import sympy
+current_file_path = 'C:/Users/Username/Documents/GitHub/HAL-8000/'
 storage = ''
+gspread_serviceaccount_file = current_file_path+'service_account.json'
 
-with open('storage.json') as storage_file:
+with open(current_file_path+'storage.json') as storage_file:
     storage = json.load(storage_file)
 
 def table_test():
@@ -42,7 +44,7 @@ def image_writer(text):
     img = Image.new("RGB", textsize, background)
     draw = ImageDraw.Draw(img)
     draw.text((10,10), text, font=fnt, spacing=0, fill=(220,221,222))
-    img.save("image.png")
+    img.save(current_file_path+"image.png")
     return img
 #end image writer
         
@@ -51,7 +53,7 @@ def find_sheet(key_category, key_name):
     return value    
         
 def read_sheet(sheet_url,type,worksheet_index):
-    gc = gspread.service_account()
+    gc = gspread.service_account(filename=gspread_serviceaccount_file)
     sheet = gc.open_by_url(sheet_url)
     sheet_content=''
     
