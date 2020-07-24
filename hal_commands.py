@@ -122,7 +122,7 @@ def generate_ccdc_calendar():
     writer.write_table()
     writer.stream = io.StringIO() #change output to string
     writer.write_table() #output to stream
-    #DEGUG PRINT
+    #DEBUG PRINT
     # print(calendar_link)
     # sympy.preview(writer.stream.getvalue(),output='png')
     return writer.stream.getvalue(), full_topics, calendar_link, zoom_links, sheet_content_original
