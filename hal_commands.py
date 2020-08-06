@@ -136,11 +136,12 @@ def find_next_meeting(sheet):
     for i in range(2,len(sheet)-1):
         date = sheet[i][column]
         today = datetime.datetime.today()
-        
-        
+        date = re.sub(r'(.+ \d{4}).*','\g<1>',re.sub(r'(\d+)(st|nd|rd|th)', '\g<1>', date))
+        print(date)
         if date.lower() == 'tba':
             return sheet[i],i-1
-        elif today.date() <= datetime.datetime.strptime(re.sub('(\d+)(st|nd|rd|th)', '\g<1>', date), '%A, %B %d, %Y').date():
+
+        elif today.date() <= datetime.datetime.strptime(date, '%A, %B %d, %Y').date():
             return sheet[i],i-1
         
     return ["There is no new meetings scheduled."]

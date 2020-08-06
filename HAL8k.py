@@ -23,10 +23,9 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 client = discord.Client()
+
 token = json.load(open(hal_commands.current_file_path+'token.json'))['token']
-
-
-# print(token)
+#print(token)
 
 
 # Define this to work with python
