@@ -4,3 +4,5 @@ storage.json
 table.png
 image.png
 __pycache__/
+service_account.json
+.vscode/settings.json
