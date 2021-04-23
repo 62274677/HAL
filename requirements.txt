@@ -1,4 +1,5 @@
 discord[voice]
+os
 requests
 pillow
 pytablewriter
