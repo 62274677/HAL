@@ -10,7 +10,7 @@ import gspread
 from PIL import Image, ImageDraw, ImageFont
 import datetime
 # import sympy
-current_file_path = os.getcwd() + "/"
+current_file_path = os.getcwd() + "/HAL/"
 storage = ''
 gspread_serviceaccount_file = current_file_path+'service_account.json'
 
