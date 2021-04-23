@@ -1,5 +1,4 @@
-discord[voice]
-os
+discord
 requests
 pillow
 pytablewriter
